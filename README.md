@@ -1,0 +1,1 @@
+# EsacaladeRemuneracionesJunioaNov2026
