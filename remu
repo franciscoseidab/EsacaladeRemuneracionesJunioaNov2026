@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculador Escala de Remuneraciones - Junio a Noviembre 2026</title>
+    <style>
+        :root {
+            /* MODO DÍA SELECCIONADO (Fondo Azul Marino y Letras Amarillas) */
+            --bg-body: #101e42;          /* Fondo azul marino muy profundo */
+            --bg-card: #162a5c;          /* Tarjetas azul oscuro */
+            --text-main: #fcd34d;        /* Letras principales: AMARILLO SOL */
+            --text-muted: #fef08a;       /* Letras secundarias: Amarillo claro */
+            --primary-color: #38bdf8;    /* Acentos celestes para títulos y guías */
+            --primary-dark: #0c1938;
+            --secondary-color: #0ea5e9;
+            --accent-color: #fbbf24;
+            --success-color: #4ade80;
+            --table-header-bg: #1d3566;
+            --input-bg: #0b132b;
+            --input-disabled-bg: #1d3566;
+            --input-disabled-text: #fde047;
+            --tab-active-bg: #1e3a7a;
+            --kpi-highlight-bg: linear-gradient(135deg, #d97706, #b45309);
+            --kpi-highlight-border: #f59e0b;
+            --kpi-highlight-text: #ffffff;
+            --row-total-bg: #0b132b;
+            --row-final-bg: #064e3b;
+            --row-final-text: #a7f3d0;
+        }
+
+        [data-theme="dark"] {
+            /* MODO NOCHE RESTAURADO (Fondo Azul Noche/Espacial y Letras Amarillas) */
+            --bg-body: #0a0f1e;          /* Fondo azul noche espacial */
+            --bg-card: #111827;          /* Tarjetas gris carbón oscuro */
+            --text-main: #fbbf24;        /* Letras principales: Amarillo intenso */
+            --text-muted: #fcd34d;       /* Letras secundarias: Amarillo suave */
+            --primary-color: #3b82f6;    /* Azul brillante */
+            --primary-dark: #000000;
+            --secondary-color: #38bdf8;
+            --accent-color: #fbbf24;
+            --success-color: #4ade80;
+            --table-header-bg: #1f2937;
+            --input-bg: #030712;
+            --input-disabled-bg: #1f2937;
+            --input-disabled-text: #9ca3af;
+            --tab-active-bg: #111827;
+            --kpi-highlight-bg: linear-gradient(135deg, #1e3a8a, #000000);
+            --kpi-highlight-border: #2563eb;
+            --kpi-highlight-text: #fbbf24; /* El Líquido se ve perfectamente en Amarillo */
+            --row-total-bg: #030712;
+            --row-final-bg: #064e3b;
+            --row-final-text: #a7f3d0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 20px;
+            padding-bottom: 60px;
+            line-height: 1.5;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            max-width: 80%;
+            color: white !important;
+        }
+
+        header p {
+            font-size: 14px;
+            color: #cbd5e1 !important;
+        }
+
+        .theme-toggle-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white !important;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .dashboard-grid {
+            display: block;
+        }
+
+        .sidebar {
+            width: 30%;
+            float: left;
+            padding-right: 20px;
+        }
+
+        .main-content {
+            width: 70%;
+            float: left;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+            opacity: 0.95;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-main);
+            background-color: var(--input-bg);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        input[disabled] {
+            background-color: var(--input-disabled-bg);
+            color: var(--input-disabled-text);
+            cursor: not-allowed;
+        }
+
+        .checkbox-group {
+            display: block;
+            margin-top: 12px;
+            padding: 4px 0;
+        }
+
+        .checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .checkbox-label input {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        /* KPI Blocks */
+        .kpi-row {
+            margin-bottom: 20px;
+        }
+        
+        .kpi-box {
+            width: 23.5%;
+            display: inline-block;
+            vertical-align: top;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-right: 1.5%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        
+        .kpi-box:last-child {
+            margin-right: 0;
+        }
+
+        .kpi-box.highlight {
+            background: var(--kpi-highlight-bg);
+            border-color: var(--kpi-highlight-border);
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-box.highlight .kpi-label,
+        .kpi-box.highlight .kpi-value {
+            color: var(--kpi-highlight-text);
+        }
+
+        .kpi-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 5px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            color: var(--text-main);
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        tr:hover td {
+            background-color: var(--table-header-bg);
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-bold {
+            font-weight: 600;
+        }
+
+        .row-total {
+            background-color: var(--row-total-bg);
+            font-weight: 700;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .row-final {
+            background-color: var(--row-final-bg);
+            color: var(--row-final-text) !important;
+            font-weight: 700;
+        }
+        
+        .row-final td {
+            color: var(--row-final-text) !important;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .badge-primary {
+            background-color: var(--tab-active-bg);
+            color: var(--text-main);
+            border: 1px solid var(--primary-color);
+        }
+
+        .tab-menu {
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            color: var(--text-main);
+            border-bottom-color: var(--primary-color);
+            background-color: var(--tab-active-bg);
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .credits-footer {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 700;
+            opacity: 0.8;
+            pointer-events: none;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Sistema de Simulación y Consulta de Remuneraciones Municipales</h1>
+        <p>Vigencia: Junio a Noviembre 2026</p>
+        <button id="theme-toggle" class="theme-toggle-btn" onclick="toggleTheme()">
+            <span>🌙</span> Modo Noche
+        </button>
+    </header>
+
+    <div class="dashboard-grid clearfix">
+        
+        <div class="sidebar">
+            <div class="card">
+                <div class="card-title">Configuración del Funcionario</div>
+                
+                <div class="form-group">
+                    <label for="select-grado">Grado de la Escala</label>
+                    <select id="select-grado" onchange="updateCalculator()">
+                        </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="input-estamento">Estamento Asociado</label>
+                    <input type="text" id="input-estamento" readonly disabled>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label style="font-weight: 700;">Horas Extraordinarias Mensuales</label>
+                    <div style="margin-bottom: 12px; margin-top: 8px;">
+                        <span style="font-size: 11px; display: block; margin-bottom: 4px;" id="valor-diurna-label">Valor Diurna: $0</span>
+                        <input type="number" id="input-horas-diurnas" min="0" value="0" placeholder="Cantidad de horas" oninput="updateCalculator()">
+                    </div>
+                    <div>
+                        <span style="font-size: 11px; display: block; margin-bottom: 4px;" id="valor-nocturna-label">Valor Nocturna/Festiva: $0</span>
+                        <input type="number" id="input-horas-nocturnas" min="0" value="0" placeholder="Cantidad de horas" oninput="updateCalculator()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-weight: 700;">Asignaciones Especiales Ley 20.922</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="check-asig-prof" onchange="updateCalculator()"> Asignación Profesional
+                        </label>
+                    </div>
+                    <div class="checkbox-group" style="margin-top: 5px;">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="check-asig-dir" onchange="updateCalculator()"> Asignación Directivo-Jefatura
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            
+            <div class="kpi-row">
+                <div class="kpi-box">
+                    <div class="kpi-label">Total Haber Base</div>
+                    <div class="kpi-value" id="kpi-total-haber">$0</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">Horas Extras Brutas</div>
+                    <div class="kpi-value" id="kpi-horas-extras">$0</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">PMG Trimestral</div>
+                    <div class="kpi-value" id="kpi-pmg">$0</div>
+                </div>
+                <div class="kpi-box highlight">
+                    <div class="kpi-label" id="kpi-liquido-label">Líquido Estimado (80%)</div>
+                    <div class="kpi-value" id="kpi-liquido" style="font-size: 22px;">$0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="tab-menu">
+                    <button class="tab-btn active" onclick="switchTab('tab-base')">Liquidación y Desglose</button>
+                    <button class="tab-btn" onclick="switchTab('tab-pmg')">Cálculo de PMG</button>
+                </div>
+
+                <div id="tab-base" class="tab-content active">
+                    <table id="table-desglose">
+                        <thead>
+                            <tr>
+                                <th>Concepto de Remuneración</th>
+                                <th class="text-right">Monto Bruto ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sueldo Base</td>
+                                <td class="text-right text-bold" id="td-sueldo-base">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Incremento Previsional (21.5%)</td>
+                                <td class="text-right" id="td-incremento">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Asignación Municipal</td>
+                                <td class="text-right" id="td-asig-mun">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Ley N° 18.717 Bonificación Única</td>
+                                <td class="text-right" id="td-ley-18717">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Ley N° 18.566 Bonificación Salud</td>
+                                <td class="text-right" id="td-ley-18566">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Ley N° 18.675 Bonificación Previsional Art. 10</td>
+                                <td class="text-right" id="td-ley-18675">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Asignación de Zona (14%)</td>
+                                <td class="text-right" id="td-asig-zona">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Asignación Ley N° 19.529</td>
+                                <td class="text-right" id="td-asig-19529">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Asignación Ley N° 20.033</td>
+                                <td class="text-right" id="td-ley-20033">$0</td>
+                            </tr>
+                            <tr id="row-asig-prof" style="display:none;">
+                                <td>Asignación Profesional Ley 20.922 <span class="badge badge-primary">Activa</span></td>
+                                <td class="text-right" id="td-asig-prof">$0</td>
+                            </tr>
+                            <tr id="row-asig-dir" style="display:none;">
+                                <td>Asignación Directivo-Jefatura Ley 20.922 <span class="badge badge-primary">Activa</span></td>
+                                <td class="text-right" id="td-asig-dir">$0</td>
+                            </tr>
+                            <tr id="row-horas-extras-tabla">
+                                <td>Horas Extraordinarias Brutas (Diurnas + Nocturnas)</td>
+                                <td class="text-right" id="td-horas-extras-monto">$0</td>
+                            </tr>
+                            <tr class="row-total">
+                                <td>TOTAL HABER CONSOLIDADO</td>
+                                <td class="text-right" id="td-total-haber-final">$0</td>
+                            </tr>
+                            <tr class="row-total row-final">
+                                <td>LÍQUIDO ESTIMADO SIMULADO (80% del Total)</td>
+                                <td class="text-right" id="td-liquido-final">$0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="tab-pmg" class="tab-content">
+                    <p style="font-size: 13px; margin-bottom: 15px; opacity: 0.9;">
+                        El Programa de Mejoramiento de la Gestión (PMG) se calcula trimestralmente sobre la base consolidada que incluye: Sueldo Base, Asignación Municipal, Ley N° 18.717 y Asig. Ley N° 19.529.
+                    </p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Componente PMG</th>
+                                <th class="text-right">Porcentaje</th>
+                                <th class="text-right">Monto Trimestral Equivalente ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-bold">Base de Cálculo PMG (Mensual)</td>
+                                <td class="text-right">-</td>
+                                <td class="text-right text-bold" id="td-pmg-base-calculo">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Componente Base</td>
+                                <td class="text-right">15.0%</td>
+                                <td class="text-right" id="td-pmg-comp-base">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Componente Institucional</td>
+                                <td class="text-right">7.6%</td>
+                                <td class="text-right" id="td-pmg-inst">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Componente Colectivo</td>
+                                <td class="text-right">8.0%</td>
+                                <td class="text-right" id="td-pmg-colectivo">$0</td>
+                            </tr>
+                            <tr class="row-total">
+                                <td>TOTAL PMG TRIMESTRAL CONSOLIDADO</td>
+                                <td class="text-right">30.6%</td>
+                                <td class="text-right" id="td-pmg-trimestral-total">$0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="credits-footer">
+        Creado por Francisco Seida
+    </div>
+</div>
+
+<script>
+    // Base de datos integrada de los archivos CSV
+    const remuneracionesData = {
+      "2": {"grado": 2, "estamento": "Alcalde", "sueldo_base": 847353.156, "incremento": 182181.0, "asig_mun": 3190103.826, "ley_18717": 27752.166, "ley_18566": 139285.068, "ley_18675": 306265.518, "asig_zona": 118629.888, "asig_19529": 0, "ley_20033": 3981713.0, "total_haber": 8793283.622, "asig_prof_20922": 0, "asig_dir_20922": 0, "hora_diurna": 0.0, "hora_nocturna": 0.0, "base_pmg": 4065209.148, "comp_base_15": 609781.3722, "inst_76": 308955.895248, "colect_8": 325216.73184, "pmg_trimes": 3731861.997864},
+      "4": {"grado": 4, "estamento": "Directivo", "sueldo_base": 844048.53, "incremento": 181470.0, "asig_mun": 2552219.748, "ley_18717": 27752.166, "ley_18566": 143539.812, "ley_18675": 314547.87, "asig_zona": 118166.49, "asig_19529": 38070.63, "ley_20033": 0.0, "total_haber": 4219815.246, "asig_prof_20922": 675232.74, "asig_dir_20922": 337617.384, "hora_diurna": 22344.0, "hora_nocturna": 26813.0, "base_pmg": 3462091.074, "comp_base_15": 519313.6611, "inst_76": 263118.921624, "colect_8": 276967.28592, "pmg_trimes": 3178199.605932},
+      "5": {"grado": 5, "estamento": "Directivo-Profesional", "sueldo_base": 796300.284, "incremento": 171205.0, "asig_mun": 2193570.99, "ley_18717": 27752.166, "ley_18566": 147294.654, "ley_18675": 321728.004, "asig_zona": 111482.202, "asig_19529": 38070.63, "ley_20033": 0.0, "total_haber": 3807403.93, "asig_prof_20922": 673045.542, "asig_dir_20922": 336524.292, "hora_diurna": 19670.0, "hora_nocturna": 23604.0, "base_pmg": 3055694.07, "comp_base_15": 458354.1105, "inst_76": 232232.74932, "colect_8": 244455.5256, "pmg_trimes": 2805127.15626},
+      "6": {"grado": 6, "estamento": "Directivo-Profesional", "sueldo_base": 751148.892, "incremento": 161497.0, "asig_mun": 1853692.386, "ley_18717": 27751.152, "ley_18566": 137039.058, "ley_18675": 359609.016, "asig_zona": 105160.926, "asig_19529": 43778.436, "ley_20033": 0.0, "total_haber": 3439676.866, "asig_prof_20922": 600913.638, "asig_dir_20922": 300456.312, "hora_diurna": 17137.0, "hora_nocturna": 20565.0, "base_pmg": 2676370.866, "comp_base_15": 401455.6299, "inst_76": 203404.185816, "colect_8": 214109.66928, "pmg_trimes": 2456908.454988},
+      "7": {"grado": 7, "estamento": "Directivo-Profesional-Jefatura", "sueldo_base": 701935.416, "incremento": 150916.0, "asig_mun": 1409325.138, "ley_18717": 28136.472, "ley_18566": 103615.59, "ley_18675": 251398.992, "asig_zona": 98270.796, "asig_19529": 44382.78, "ley_20033": 0.0, "total_haber": 2787981.184, "asig_prof_20922": 555881.898, "asig_dir_20922": 277941.456, "hora_diurna": 13890.0, "hora_nocturna": 16668.0, "base_pmg": 2183779.806, "comp_base_15": 327566.9709, "inst_76": 165967.265256, "colect_8": 174702.38448, "pmg_trimes": 2004709.861908},
+      "8": {"grado": 8, "estamento": "Directivo-Profesional-Jefatura", "sueldo_base": 662133.888, "incremento": 142359.0, "asig_mun": 1102467.444, "ley_18717": 28666.794, "ley_18566": 80547.09, "ley_18675": 195369.408, "asig_zona": 92698.866, "asig_19529": 45218.316, "ley_20033": 0.0, "total_haber": 2349460.806, "asig_prof_20922": 507961.272, "asig_dir_20922": 253982.664, "hora_diurna": 11609.0, "hora_nocturna": 13931.0, "base_pmg": 1838486.442, "comp_base_15": 275772.9663, "inst_76": 139724.969592, "colect_8": 147078.91536, "pmg_trimes": 1687730.553756},
+      "9": {"grado": 9, "estamento": "Profesional-Jefatura-Tecnico", "sueldo_base": 613025.868, "incremento": 131801.0, "asig_mun": 847112.838, "ley_18717": 28666.794, "ley_18566": 61397.7, "ley_18675": 148950.516, "asig_zona": 85823.946, "asig_19529": 45218.316, "ley_20033": 0.0, "total_haber": 1961996.978, "asig_prof_20922": 459683.718, "asig_dir_20922": 229839.324, "hora_diurna": 9606.0, "hora_nocturna": 11527.0, "base_pmg": 1534023.816, "comp_base_15": 230103.5724, "inst_76": 116585.810016, "colect_8": 122721.90528, "pmg_trimes": 1408233.863088},
+      "10": {"grado": 10, "estamento": "Profesional-Jefatura-Tecnico", "sueldo_base": 567659.508, "incremento": 122047.0, "asig_mun": 640322.748, "ley_18717": 28666.794, "ley_18566": 45918.99, "ley_18675": 111317.934, "asig_zona": 79472.25, "asig_19529": 45218.316, "ley_20033": 0.0, "total_haber": 1640623.54, "asig_prof_20922": 415996.542, "asig_dir_20922": 207998.778, "hora_diurna": 7947.0, "hora_nocturna": 9537.0, "base_pmg": 1281867.366, "comp_base_15": 192280.1049, "inst_76": 97421.919816, "colect_8": 102549.38928, "pmg_trimes": 1176754.241988},
+      "11": {"grado": 11, "estamento": "Profesional-Tecnico-Administrativo", "sueldo_base": 525644.418, "incremento": 113014.0, "asig_mun": 483836.184, "ley_18717": 28666.794, "ley_18566": 34180.926, "ley_18675": 82968.522, "asig_zona": 73590.036, "asig_19529": 45218.316, "ley_20033": 0.0, "total_haber": 1387119.196, "asig_prof_20922": 376475.892, "asig_dir_20922": 188235.918, "hora_diurna": 6641.0, "hora_nocturna": 7970.0, "base_pmg": 1083365.712, "comp_base_15": 162504.8568, "inst_76": 82335.794112, "colect_8": 86669.25696, "pmg_trimes": 994529.723616},
+      "12": {"grado": 12, "estamento": "Tecnico-Administrativo", "sueldo_base": 486708.846, "incremento": 104642.0, "asig_mun": 357132.828, "ley_18717": 106676.856, "ley_18566": 27301.95, "ley_18675": 70170.828, "asig_zona": 68138.772, "asig_19529": 74708.478, "ley_20033": 0.0, "total_haber": 1295480.558, "asig_prof_20922": 340698.93, "asig_dir_20922": 170348.958, "hora_diurna": 5552.0, "hora_nocturna": 6662.0, "base_pmg": 1025227.008, "comp_base_15": 153784.0512, "inst_76": 77917.252608, "colect_8": 82018.16064, "pmg_trimes": 941158.393344},
+      "13": {"grado": 13, "estamento": "Tecnico-Administrativo-Auxiliar", "sueldo_base": 450638.838, "incremento": 96887.0, "asig_mun": 265759.26, "ley_18717": 103524.33, "ley_18566": 19701.006, "ley_18675": 51807.288, "asig_zona": 63089.052, "asig_19529": 74708.478, "ley_20033": 0.0, "total_haber": 1126115.252, "asig_prof_20922": 0, "asig_dir_20922": 0, "hora_diurna": 4713.0, "hora_nocturna": 5656.0, "base_pmg": 894630.906, "comp_base_15": 134194.6359, "inst_76": 67991.948856, "colect_8": 71570.47248, "pmg_trimes": 821271.171708},
+      "14": {"grado": 14, "estamento": "Tecnico-Administrativo-Auxiliar", "sueldo_base": 417190.02, "incremento": 89696.0, "asig_mun": 200749.692, "ley_18717": 102695.892, "ley_18566": 14566.11, "ley_18675": 39061.308, "asig_zona": 58406.4, "asig_19529": 74708.478, "ley_20033": 0.0, "total_haber": 997073.9, "asig_prof_20922": 0, "asig_dir_20922": 0, "hora_diurna": 4065.0, "hora_nocturna": 4878.0, "base_pmg": 795344.082, "comp_base_15": 119301.6123, "inst_76": 60446.150232, "colect_8": 63627.52656, "pmg_trimes": 730125.867276},
+      "15": {"grado": 15, "estamento": "Tecnico-Administrativo-Auxiliar", "sueldo_base": 386314.734, "incremento": 83058.0, "asig_mun": 161244.252, "ley_18717": 88436.01, "ley_18566": 11396.346, "ley_18675": 30292.236, "asig_zona": 54083.718, "asig_19529": 74708.478, "ley_20033": 0.0, "total_haber": 889533.774, "asig_prof_20922": 0, "asig_dir_20922": 0, "hora_diurna": 3602.0, "hora_nocturna": 4323.0, "base_pmg": 710703.474, "comp_base_15": 106605.5211, "inst_76": 54013.464024, "colect_8": 56856.27792, "pmg_trimes": 652425.789132},
+      "16": {"grado": 16, "estamento": "Administrativo-Auxiliar", "sueldo_base": 357632.73, "incremento": 76891.0, "asig_mun": 158361.45, "ley_18717": 93172.404, "ley_18566": 11070.852, "ley_18675": 29501.316, "asig_zona": 50068.278, "asig_19529": 74708.478, "ley_20033": 0.0, "total_haber": 851406.508, "asig_prof_20922": 0, "asig_dir_20922": 0, "hora_diurna": 3395.0, "hora_nocturna": 4074.0, "base_pmg": 683875.062, "comp_base_15": 102581.2593, "inst_76": 51974.504712, "colect_8": 54710.00496, "pmg_trimes": 627797.306916},
+      "17": {"grado": 17, "estamento": "Auxiliar", "sueldo_base": 331148.064, "incremento": 71197.0, "asig_mun": 122439.486, "ley_18717": 86679.762, "ley_18566": 7936.578, "ley_18675": 21261.552, "asig_zona": 46361.094, "asig_19529": 74708.478, "ley_20033": 0.0, "total_haber": 761732.014, "asig_prof_20922": 0, "asig_dir_20922": 0, "hora_diurna": 2984.0, "hora_nocturna": 3581.0, "base_pmg": 614975.79, "comp_base_15": 92246.3685, "inst_76": 46738.16004, "colect_8": 49198.0632, "pmg_trimes": 564547.77522}
+    };
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        let targetTheme = 'light';
+        let btnHTML = '<span>🌙</span> Modo Noche';
+        
+        if (currentTheme !== 'dark') {
+            targetTheme = 'dark';
+            btnHTML = '<span>☀️</span> Modo Día';
+        }
+        
+        document.documentElement.setAttribute('data-theme', targetTheme);
+        document.getElementById('theme-toggle').innerHTML = btnHTML;
+    }
+
+    function init() {
+        const selectGrado = document.getElementById('select-grado');
+        const sortedGrades = Object.keys(remuneracionesData).sort((a,b) => parseInt(a) - parseInt(b));
+        
+        sortedGrades.forEach(grado => {
+            const opt = document.createElement('option');
+            opt.value = grado;
+            opt.textContent = `Grado ${grado} - ${remuneracionesData[grado].estamento}`;
+            if(grado == "11") opt.selected = true;
+            selectGrado.appendChild(opt);
+        });
+        
+        updateCalculator();
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function updateCalculator() {
+        const grado = document.getElementById('select-grado').value;
+        const data = remuneracionesData[grado];
+        
+        if (!data) return;
+
+        document.getElementById('input-estamento').value = data.estamento;
+        document.getElementById('valor-diurna-label').textContent = `Valor Hora Diurna (25%): ${formatCurrency(data.hora_diurna)}`;
+        document.getElementById('valor-nocturna-label').textContent = `Valor Hora Nocturna/Festiva (50%): ${formatCurrency(data.hora_nocturna)}`;
+
+        const hDiurnas = parseFloat(document.getElementById('input-horas-diurnas').value) || 0;
+        const hNocturnas = parseFloat(document.getElementById('input-horas-nocturnas').value) || 0;
+        const useAsigProf = document.getElementById('check-asig-prof').checked;
+        const useAsigDir = document.getElementById('check-asig-dir').checked;
+
+        const montoHorasExtras = (hDiurnas * data.hora_diurna) + (hNocturnas * data.hora_nocturna);
+
+        document.getElementById('td-sueldo-base').textContent = formatCurrency(data.sueldo_base);
+        document.getElementById('td-incremento').textContent = formatCurrency(data.incremento);
+        document.getElementById('td-asig-mun').textContent = formatCurrency(data.asig_mun);
+        document.getElementById('td-ley-18717').textContent = formatCurrency(data.ley_18717);
+        document.getElementById('td-ley-18566').textContent = formatCurrency(data.ley_18566);
+        document.getElementById('td-ley-18675').textContent = formatCurrency(data.ley_18675);
+        document.getElementById('td-asig-zona').textContent = formatCurrency(data.asig_zona);
+        document.getElementById('td-asig-19529').textContent = formatCurrency(data.asig_19529);
+        document.getElementById('td-ley-20033').textContent = formatCurrency(data.ley_20033);
+
+        let extraAsigMonto = 0;
+        if (useAsigProf && data.asig_prof_20922 > 0) {
+            document.getElementById('row-asig-prof').style.display = 'table-row';
+            document.getElementById('td-asig-prof').textContent = formatCurrency(data.asig_prof_20922);
+            extraAsigMonto += data.asig_prof_20922;
+        } else {
+            document.getElementById('row-asig-prof').style.display = 'none';
+        }
+
+        if (useAsigDir && data.asig_dir_20922 > 0) {
+            document.getElementById('row-asig-dir').style.display = 'table-row';
+            document.getElementById('td-asig-dir').textContent = formatCurrency(data.asig_dir_20922);
+            extraAsigMonto += data.asig_dir_20922;
+        } else {
+            document.getElementById('row-asig-dir').style.display = 'none';
+        }
+
+        document.getElementById('td-horas-extras-monto').textContent = formatCurrency(montoHorasExtras);
+
+        const totalHaberConsolidado = data.total_haber + extraAsigMonto + montoHorasExtras;
+        const liquidoEstimado = totalHaberConsolidado * 0.8;
+
+        document.getElementById('kpi-total-haber').textContent = formatCurrency(data.total_haber + extraAsigMonto);
+        document.getElementById('kpi-horas-extras').textContent = formatCurrency(montoHorasExtras);
+        document.getElementById('kpi-pmg').textContent = formatCurrency(data.pmg_trimes);
+        document.getElementById('kpi-liquido').textContent = formatCurrency(liquidoEstimado);
+
+        document.getElementById('td-total-haber-final').textContent = formatCurrency(totalHaberConsolidado);
+        document.getElementById('td-liquido-final').textContent = formatCurrency(liquidoEstimado);
+
+        document.getElementById('td-pmg-base-calculo').textContent = formatCurrency(data.base_pmg);
+        document.getElementById('td-pmg-comp-base').textContent = formatCurrency(data.comp_base_15);
+        document.getElementById('td-pmg-inst').textContent = formatCurrency(data.inst_76);
+        document.getElementById('td-pmg-colectivo').textContent = formatCurrency(data.colect_8);
+        document.getElementById('td-pmg-trimestral-total').textContent = formatCurrency(data.pmg_trimes);
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
